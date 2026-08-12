@@ -64,12 +64,12 @@ Please see OS-specific instructions:
 Custom messages can be included in the build using one of the following methods:
 
 - **Method A: Git-based** - List custom message repositories in `ros2_for_unity_custom_messages.repos`.
-- **Method B: Local folder** - Drop ROS 2 message packages into the `custom_messages/` directory at the repository root.
+- **Method B: Local folder** - Drop ROS 2 message packages into `custom_messages/` at the repository root.
 
 Directory structure example for Method B:
-```
+```text
 ros2-for-unity/
-├── custom_messages/
+├── custom_messages/             <-- Custom ROS 2 message packages
 │   ├── my_custom_msgs/
 │   │   ├── msg/
 │   │   │   └── MyCustom.msg

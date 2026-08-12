@@ -12,17 +12,30 @@ Start with installation of dependencies. Make sure to complete each step of `ros
 
 ### Building with Docker Compose (Recommended)
 
-Building with Docker Compose is the recommended approach as it handles all dependencies automatically inside a containerized build environment.
+Building with Docker Compose is the recommended approach as it handles all build dependencies automatically inside a containerized environment.
 
+#### Option A: Automated One-Command Build
 ```bash
-# Build the standalone asset
+# Build the standalone asset automatically
 docker compose up --build
-# Output will be in install/asset/Ros2ForUnity/
+# Output asset will be generated in install/asset/Ros2ForUnity/
 ```
 
-To include custom messages when building with Docker Compose:
-- Edit `ros2_for_unity_custom_messages.repos` to specify repository URLs, OR
-- Drop ROS 2 message packages into the `custom_messages/` directory at the repository root.
+#### Option B: Interactive Shell Mode (Step-by-Step / Debugging)
+```bash
+# Start an interactive container bash shell
+docker compose run --rm builder bash
+
+# Inside container:
+./pull_repositories.sh
+./build.sh --standalone
+exit
+```
+
+#### Custom Messages Support
+To include custom ROS 2 messages when building with Docker Compose:
+- **Local directory**: Drop ROS 2 message package folders into `custom_messages/` at the repository root.
+- **Git repositories**: Edit `ros2_for_unity_custom_messages.repos` to list remote repositories.
 
 ### Steps
 

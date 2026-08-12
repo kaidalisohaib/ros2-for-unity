@@ -1,28 +1,85 @@
-# Ros2 For Unity - Docker Build
+# ROS 2 For Unity — Docker Build Guide
 
-Docker Compose is used for building the ROS2 For Unity standalone asset in a clean, reproducible environment with all dependencies automatically handled.
+Docker Compose is used for building the ROS2 For Unity standalone asset in a clean, reproducible environment with all dependencies (ROS 2 Jazzy, .NET 8 SDK, `libfmt`, `libtinyxml2`, `patchelf`) automatically handled.
 
-## Building
+---
 
-To build the standalone asset using Docker Compose, run the following command from the repository root:
+## Workflow Options
+
+### Option A: One-Command Automated Build (Recommended for Teams)
+
+To build the complete standalone asset automatically in one command, run:
 
 ```bash
 docker compose up --build
 ```
 
-Upon successful completion, the compiled asset will be available on your host machine at:
-```
+When finished, your Unity asset will be ready at:
+```text
 install/asset/Ros2ForUnity/
 ```
+Simply copy this folder into your Unity project's `Assets/` directory.
 
-## Custom Messages
+---
 
-You can include custom ROS 2 messages in the Docker build using either of the following methods:
+### Option B: Interactive Shell Mode (Recommended for Debugging & Step-by-Step Execution)
 
-- **Git-based**: Edit `ros2_for_unity_custom_messages.repos` at the repository root to specify repository URLs.
-- **Local packages**: Drop ROS 2 message packages into the `custom_messages/` directory at the repository root.
+If you prefer to enter the container interactively to run build steps manually, inspect logs, or debug:
 
-## Notes
+1. **Start an interactive bash shell inside the container:**
+   ```bash
+   docker compose run --rm builder bash
+   ```
+
+2. **Run the setup and build commands step-by-step inside the container:**
+   ```bash
+   # Pull sub-repositories
+   ./pull_repositories.sh
+
+   # Build standalone asset
+   ./build.sh --standalone
+   ```
+
+3. **Exit the container:**
+   ```bash
+   exit
+   ```
+
+---
+
+## Adding Custom Messages
+
+ROS2 For Unity automatically generates C# wrappers (`.dll` assemblies) for standard and custom ROS 2 messages. You can include custom messages using either of these methods:
+
+### Method 1: Local Directory (Easiest for local development)
+Drop your ROS 2 message package folder(s) directly into the `custom_messages/` directory at the repository root:
+
+```text
+ros2-for-unity/
+├── custom_messages/             <-- Single folder for custom messages
+│   └── my_custom_msgs/          <-- Your ROS 2 package
+│       ├── CMakeLists.txt
+│       ├── package.xml
+│       └── msg/
+│           └── MyMessage.msg
+├── docker-compose.yml
+└── ...
+```
+
+### Method 2: Git Repositories (For shared team packages)
+Edit `ros2_for_unity_custom_messages.repos` at the repository root:
+
+```yaml
+repositories:
+  src/ros2cs/custom_messages/my_custom_msgs:
+    type: git
+    url: https://github.com/my-org/my_custom_msgs.git
+    version: main
+```
+
+---
+
+## Notes & Migration
 
 > [!NOTE]
-> The old `build_image.sh` and `run_container.sh` scripts have been removed in favor of the unified Docker Compose workflow.
+> The legacy scripts (`build_image.sh` and `run_container.sh`) have been replaced by `docker-compose.yml`. Use `docker compose up` or `docker compose run --rm builder bash` instead.
