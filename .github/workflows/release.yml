@@ -49,7 +49,9 @@ jobs:
       - name: Build Standalone Asset
         env:
           ROS_DISTRO: jazzy
-        run: .\build.ps1 -standalone
+        run: |
+          . C:\dev\jazzy\ros2-windows\local_setup.ps1
+          .\build.ps1 -standalone
 
       - name: Upload Windows Asset
         uses: actions/upload-artifact@v7
