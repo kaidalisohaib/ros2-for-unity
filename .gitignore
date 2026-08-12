@@ -6,3 +6,5 @@ src/ros2cs
 **/metadata*.xml
 src/Ros2ForUnity/Plugins
 !src/Ros2ForUnity/Plugins/.gitkeep
+custom_messages/*/
+!custom_messages/.gitkeep

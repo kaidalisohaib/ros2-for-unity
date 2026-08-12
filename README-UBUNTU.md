@@ -1,6 +1,6 @@
-# ROS2 For Unity - Ubuntu 20.04 and 22.04
+# ROS2 For Unity - Ubuntu 20.04, 22.04, and 24.04
 
-This readme contains information specific to Ubuntu 20.04/22.04. For general information, please see [README.md](README.md)
+This readme contains information specific to Ubuntu 20.04/22.04/24.04. For general information, please see [README.md](README.md)
 
 ## Building
 
@@ -9,6 +9,20 @@ We assume that working directory is `~/ros2-for-unity` and we are using `ROS2 ga
 ### Prerequisites
 
 Start with installation of dependencies. Make sure to complete each step of `ros2cs` [Prerequisites section](https://github.com/RobotecAI/ros2cs/blob/master/README-UBUNTU.md#prerequisites).
+
+### Building with Docker Compose (Recommended)
+
+Building with Docker Compose is the recommended approach as it handles all dependencies automatically inside a containerized build environment.
+
+```bash
+# Build the standalone asset
+docker compose up --build
+# Output will be in install/asset/Ros2ForUnity/
+```
+
+To include custom messages when building with Docker Compose:
+- Edit `ros2_for_unity_custom_messages.repos` to specify repository URLs, OR
+- Drop ROS 2 message packages into the `custom_messages/` directory at the repository root.
 
 ### Steps
 
@@ -49,10 +63,11 @@ Start with installation of dependencies. Make sure to complete each step of `ros
 
 ## OS-Specific usage remarks
 
-You can run Unity Editor or App executable from GUI (clicking) or from terminal as long as ROS2 is sourced in your environment.
-The best way to ensure that system-wide is to add `source /opt/ros/foxy/setup.bash` to your `~/.profile` file.
+For **standalone builds**, no ROS 2 environment sourcing is required. You can launch the Unity Editor directly from Unity Hub or GUI application launchers, or run built executables directly.
+
+For **overlay builds**, you can run Unity Editor or App executable from GUI (clicking) or from terminal as long as ROS 2 is sourced in your environment. If sourcing system-wide, add your ROS 2 setup script (e.g. `source /opt/ros/jazzy/setup.bash`) to your `~/.profile` file.
 Note that you need to re-log for changes in `~/.profile` to take place.
-Running Unity Editor through Unity Hub is also supported.
+Running Unity Editor through Unity Hub is also supported for overlay builds as long as ROS 2 is properly sourced in the environment before launching Hub.
 
 ## Usage troubleshooting
 

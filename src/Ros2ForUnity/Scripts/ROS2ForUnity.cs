@@ -300,9 +300,23 @@ internal class ROS2ForUnity
         } else {
             // For foxy, it is necessary to use modified version of librcpputils to resolve custom msgs packages.
             ROS2.GlobalVariables.absolutePath = GetPluginPath() + "/";
-            if (currentRos2Version == "foxy") {
+            if (currentRos2Version == "foxy" || currentRos2Version == "jazzy") {
                 ROS2.GlobalVariables.preloadLibrary = true;
                 ROS2.GlobalVariables.preloadLibraryName = "librcpputils.so";
+            }
+        }
+
+        // For Linux standalone, inject AMENT_PREFIX_PATH so rcl can discover
+        // DDS middleware plugins without requiring `source /opt/ros/.../setup.bash`
+        if (IsStandalone() && GetOS() == Platform.Linux)
+        {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AMENT_PREFIX_PATH")))
+            {
+                Environment.SetEnvironmentVariable("AMENT_PREFIX_PATH", GetPluginPath());
+            }
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("RMW_IMPLEMENTATION")))
+            {
+                Environment.SetEnvironmentVariable("RMW_IMPLEMENTATION", "rmw_fastrtps_cpp");
             }
         }
 

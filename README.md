@@ -61,9 +61,23 @@ Please see OS-specific instructions:
 
 ## Custom messages
 
-Custom messages can be included in the build by either:
-* listing them in `ros2_for_unity_custom_messages.repos` file, or
-* manually inserting them in `src/ros2cs` directory. If the folder doesn't exist, you must pull repositories first (see building steps for each OS).
+Custom messages can be included in the build using one of the following methods:
+
+- **Method A: Git-based** - List custom message repositories in `ros2_for_unity_custom_messages.repos`.
+- **Method B: Local folder** - Drop ROS 2 message packages into the `custom_messages/` directory at the repository root.
+
+Directory structure example for Method B:
+```
+ros2-for-unity/
+├── custom_messages/
+│   ├── my_custom_msgs/
+│   │   ├── msg/
+│   │   │   └── MyCustom.msg
+│   │   ├── CMakeLists.txt
+│   │   └── package.xml
+│   └── another_msg_pkg/
+│       └── ...
+```
 
 ## Installation
 
@@ -77,11 +91,9 @@ Custom messages can be included in the build by either:
 
 **Prerequisites**
 
-* If your build was prepared with `--standalone` flag then you are fine, and all you have to do is run the editor
+* **Standalone build**: No ROS 2 installation or environment sourcing is required on the target machine. You can launch the Unity Editor directly (including from Unity Hub) or run your standalone application executable.
 
-otherwise
-
-* source ROS2 which matches the `Ros2ForUnity` version, then run the editor from within the very same terminal/console.
+* **Overlay build**: Requires an installed ROS 2 environment matching the `Ros2ForUnity` version. You must source ROS 2 in your terminal before launching Unity from that same terminal.
 
 **Initializing Ros2ForUnity**
 

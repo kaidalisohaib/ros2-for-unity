@@ -1,21 +1,32 @@
-ARG ROS2_DISTRO=humble
+ARG ROS2_DISTRO=jazzy
 FROM ros:${ROS2_DISTRO}-ros-base
 
-RUN apt update && apt install -y ros-${ROS_DISTRO}-test-msgs ros-${ROS_DISTRO}-fastrtps ros-${ROS_DISTRO}-rmw-fastrtps-cpp ros-${ROS_DISTRO}-cyclonedds ros-${ROS_DISTRO}-rmw-cyclonedds-cpp
+# ROS 2 middleware packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-${ROS_DISTRO}-test-msgs \
+    ros-${ROS_DISTRO}-fastrtps \
+    ros-${ROS_DISTRO}-rmw-fastrtps-cpp \
+    ros-${ROS_DISTRO}-cyclonedds \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt update && apt install -y curl wget git
+# Build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl wget git python3-vcstool apt-transport-https patchelf \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
-RUN apt update && apt install -y python3-vcstool
+# .NET 8 SDK (LTS - recommended for netstandard2.0 targets)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    dotnet-sdk-8.0 \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt update && apt install -y apt-transport-https patchelf dotnet-sdk-6.0
-RUN apt update && apt install -y ffmpeg libsm6 libxext6 libgtk-3-0
+# Dev headers so CMake can locate and bundle OS libraries into standalone
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libfmt-dev \
+    libtinyxml2-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-RUN mkdir -p /workdir/ros2-for-unity
-RUN chmod -R 777 /workdir
-RUN chmod -R 777 /home
 
 ENTRYPOINT [ "/entrypoint.sh" ]

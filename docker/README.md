@@ -1,36 +1,28 @@
-Ros2 For Unity Docker
-===============
+# Ros2 For Unity - Docker Build
 
-Currently only building asset on Ubuntu is supported. Build windows version is not supported.
+Docker Compose is used for building the ROS2 For Unity standalone asset in a clean, reproducible environment with all dependencies automatically handled.
 
-## Build docker image
+## Building
 
-1. Source ROS2 (foxy or galactic):
-
-```bash
-. /opt/ros/<ROS_DISTRO>/setup.bash
-```
-
-2. Build image - image will be based on sourced ROS2 version:
+To build the standalone asset using Docker Compose, run the following command from the repository root:
 
 ```bash
-./build_image.sh
+docker compose up --build
 ```
 
-## Using docker container
-
-1. Run docker container. Container will fetch `master` version of `ros2-for-unity`:
-
-```bash
-./run_container.sh
+Upon successful completion, the compiled asset will be available on your host machine at:
+```
+install/asset/Ros2ForUnity/
 ```
 
-2. Build asset. `./run_container.sh` script mounts `install` host directory inside docker, so you can find install results on host machine:
+## Custom Messages
 
-```bash
-./build.sh --with-tests
-```
+You can include custom ROS 2 messages in the Docker build using either of the following methods:
 
-## Adding custom messages
+- **Git-based**: Edit `ros2_for_unity_custom_messages.repos` at the repository root to specify repository URLs.
+- **Local packages**: Drop ROS 2 message packages into the `custom_messages/` directory at the repository root.
 
-You can add custom messages by putting them inside `docker/custom_messages` folder or just simply `git clone` them inside docker containers `/workdir/ros2-for-unity/src/ros2cs/src/custom_messages`
+## Notes
+
+> [!NOTE]
+> The old `build_image.sh` and `run_container.sh` scripts have been removed in favor of the unified Docker Compose workflow.

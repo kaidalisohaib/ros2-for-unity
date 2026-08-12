@@ -1,0 +1,25 @@
+services:
+  builder:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        ROS2_DISTRO: jazzy
+    image: ros2-unity-builder:jazzy
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      - ROS_DISTRO=jazzy
+      - HOME=/tmp
+    entrypoint: ["/entrypoint.sh"]
+    command: >
+      bash -c "
+        ./pull_repositories.sh &&
+        if [ -d custom_messages ] && [ \"$$(ls -A custom_messages 2>/dev/null)\" ]; then
+          mkdir -p src/ros2cs/src/custom_messages &&
+          cp -rn custom_messages/* src/ros2cs/src/custom_messages/ 2>/dev/null || true;
+        fi &&
+        ./build.sh --standalone
+      "
