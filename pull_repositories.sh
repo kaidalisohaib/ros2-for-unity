@@ -9,8 +9,12 @@ if [ -z "${ROS_DISTRO}" ]; then
 fi
 
 echo "========================================="
-echo "* Pulling ros2cs repository:"
-vcs import < "ros2cs.repos"
+echo "* Pulling/updating ros2cs repository:"
+if [ -d "src/ros2cs/.git" ]; then
+    git -C "src/ros2cs" pull
+else
+    vcs import < "ros2cs.repos"
+fi
 
 echo ""
 echo "========================================="
