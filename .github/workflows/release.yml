@@ -36,7 +36,7 @@ jobs:
           required-ros-distributions: jazzy
 
       - name: Fix Python 3.12 setuptools issue for vcs tool
-        run: python -m pip install --upgrade setuptools
+        run: python -m pip install "setuptools<70.0.0"
 
       - name: Pull Repositories
         env:
