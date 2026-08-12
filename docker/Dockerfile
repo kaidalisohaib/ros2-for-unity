@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtinyxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-ADD entrypoint.sh /entrypoint.sh
+ADD docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
