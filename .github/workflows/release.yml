@@ -15,7 +15,7 @@ jobs:
 
       - name: Build Standalone Asset via Docker Compose
         run: |
-          docker compose up --build
+          UID=$(id -u) GID=$(id -g) docker compose up --build
 
       - name: Upload Linux Asset
         uses: actions/upload-artifact@v7
@@ -36,9 +36,13 @@ jobs:
           required-ros-distributions: jazzy
 
       - name: Pull Repositories
+        env:
+          ROS_DISTRO: jazzy
         run: .\pull_repositories.ps1
 
       - name: Build Standalone Asset
+        env:
+          ROS_DISTRO: jazzy
         run: .\build.ps1 -standalone
 
       - name: Upload Windows Asset
