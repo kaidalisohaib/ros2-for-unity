@@ -1,0 +1,91 @@
+name: Build & Release Standalone Asset
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Build Standalone Asset via Docker Compose
+        run: |
+          docker compose up --build
+
+      - name: Upload Linux Asset
+        uses: actions/upload-artifact@v7
+        with:
+          name: ros2-unity-linux
+          path: install/asset/Ros2ForUnity/
+          retention-days: 1
+
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Setup ROS 2 Jazzy
+        uses: ros-tooling/setup-ros@v0.7
+        with:
+          required-ros-distributions: jazzy
+
+      - name: Pull Repositories
+        run: .\pull_repositories.ps1
+
+      - name: Build Standalone Asset
+        run: .\build.ps1 -standalone
+
+      - name: Upload Windows Asset
+        uses: actions/upload-artifact@v7
+        with:
+          name: ros2-unity-windows
+          path: install/asset/Ros2ForUnity/
+          retention-days: 1
+
+  create-release:
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download Linux Asset
+        uses: actions/download-artifact@v8
+        with:
+          name: ros2-unity-linux
+          path: Ros2ForUnity
+
+      - name: Download Windows Asset
+        uses: actions/download-artifact@v8
+        with:
+          name: ros2-unity-windows
+          path: Ros2ForUnity
+
+      - name: Package Asset into Zip
+        run: |
+          zip -r Ros2ForUnity-jazzy-standalone-all-platforms.zip Ros2ForUnity
+
+      - name: Create Draft GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: Ros2ForUnity-jazzy-standalone-all-platforms.zip
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## ROS 2 For Unity - Jazzy Standalone Release
+            
+            - **ROS 2 Version**: Jazzy
+            - **Build Type**: True Standalone (No ROS 2 installation required on target machine)
+            - **Platforms Included**: 
+              - Ubuntu 24.04 / Linux x86_64
+              - Windows 10/11 / x86_64
+            
+            ### Usage:
+            Download and extract `Ros2ForUnity-jazzy-standalone-all-platforms.zip`, then copy the `Ros2ForUnity` folder into your Unity project's `Assets/` directory.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
