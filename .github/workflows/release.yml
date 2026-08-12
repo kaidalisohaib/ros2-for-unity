@@ -15,7 +15,7 @@ jobs:
 
       - name: Build Standalone Asset via Docker Compose
         run: |
-          UID=$(id -u) GID=$(id -g) docker compose up --build
+          USER_ID=$(id -u) GROUP_ID=$(id -g) docker compose up --build
 
       - name: Upload Linux Asset
         uses: actions/upload-artifact@v7

@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/workspace
     working_dir: /workspace
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
     environment:
       - ROS_DISTRO=jazzy
       - HOME=/tmp
