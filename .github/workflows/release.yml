@@ -35,6 +35,9 @@ jobs:
         with:
           required-ros-distributions: jazzy
 
+      - name: Fix Python 3.12 setuptools issue for vcs tool
+        run: python -m pip install --upgrade setuptools
+
       - name: Pull Repositories
         env:
           ROS_DISTRO: jazzy
